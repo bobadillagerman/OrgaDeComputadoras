@@ -2,8 +2,8 @@
 #include <string.h>
 #include <getopt.h>
 #include <stdlib.h>
-//#include <unistd.h>
-//#include <errno.h>
+#include <unistd.h>
+#include <errno.h>
 
 #define ERROR -1
 #define SALIDA_EXITOSA 0
@@ -40,11 +40,18 @@ int main(int argc, char *argv[]) {
     };
     FILE *inputFile = NULL;
     FILE *outputFile = NULL;
-
+    char ch;
+    int primerNumero = 1;
+    size_t dimension;
+    //double *num;
+    double *array;
+    int posicion=0;
+    //char line[256];
+    
     while ((option = getopt_long(argc, argv, short_opt, long_opt, NULL)) != -1) {
         switch (option) {
             case 'V':
-                printf("TP #0 de la materia Organización de Computadoras \n");
+                printf("TP #0 de la materia Organizaciï¿½n de Computadoras \n");
                 printf("Alumnos: \n");
                 printf("	Bobadilla Catalan, German\n	Leloutre, Daniela \n	Soro, Lucas \n");
                 return 0;
@@ -63,6 +70,41 @@ int main(int argc, char *argv[]) {
 					if(inputFile == NULL) {
 						fprintf(stderr, "Error archivo entrada: %s\n", strerror(errno));
 						return ERROR;
+					} else {
+						while ((ch = fgetc(inputFile)) != EOF){
+						//while ((fscanf(inputFile,"%s",line)) != EOF){
+							//char letra;
+							//printf("Linea: %s \n", line);
+							//letra=line[0];
+							//dimension = atoi(*letra);
+							//printf("dimension: %ld", (long unsigned int)letra);
+							//dimension = (int) letra;
+							if (ch != '\n'){
+								if (primerNumero == 1){
+									//paso la dimension para crear matriz
+									dimension = (long unsigned int)ch;
+									create_matrix(dimension,dimension);
+									primerNumero = 0;
+								} else {
+									//armo la matriz
+									//double array[dimension];
+									//*array[posicion] = (double)ch;
+									//num=&array[posicion];
+									//printf("numero: %f",*array[posicion]);
+									//array[posicion]=num;
+									printf("posicion: %d \n", posicion);
+									printf("posicion: %f \n", ch);
+									//printf("%f", array[posicion]);
+									posicion++;
+								}
+							} else {
+								primerNumero = 1;
+								posicion = 0;
+							}
+							
+						}
+						printf("\n");
+						fclose(inputFile);
 					}
             	}
                 break;
@@ -76,7 +118,7 @@ int main(int argc, char *argv[]) {
             	}
                 break;
             default:
-                // así está en el manual de getopt
+                // asï¿½ estï¿½ en el manual de getopt
                 abort();
         }
     }
@@ -94,4 +136,10 @@ int main(int argc, char *argv[]) {
     }*/
 
     return SALIDA_EXITOSA;
+}
+
+matrix_t* create_matrix(size_t rows, size_t cols){
+	struct matrix matrix = {.rows = rows,.cols = cols };
+	printf("creo matriz de %c x %c \n", rows, cols);
+	
 }
