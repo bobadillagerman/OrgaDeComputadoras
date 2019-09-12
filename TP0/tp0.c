@@ -22,7 +22,22 @@ void destroy_matrix(matrix_t* m);
 
 // Imprime matrix_t sobre el file pointer fp en el formato solicitado
 // por el enunciado
-int print_matrix(FILE* fp, matrix_t* m);
+int print_matrix(FILE* fp, matrix_t* m){
+
+    fprintf(fp, "%d ", m->cols);
+    int i = 0;
+    while (i < m->cols*m->cols){
+        fprintf(fp, "%g ", m->array[i]);
+        i++;
+    }
+
+    if(fclose(fp)==EOF){
+        fprintf(stderr, "Error fclose: %s\n", strerror( errno ));
+        return ERROR;
+    }
+
+    return SALIDA_EXITOSA;
+}
 
 // Multiplica las matrices en m1 y m2
 matrix_t* matrix_multiply(matrix_t* m1, matrix_t* m2);
@@ -131,9 +146,19 @@ int main(int argc, char *argv[]) {
         outputFile = stdout;
     }
 
-    /*if(processInput(inputFile, outputFile) == ERROR) {
+    //Solo para probar que funca la impresion (despues se quita)
+    matrix_t matriz1, matriz2;
+    matriz1.cols = 2;
+    matriz1.rows = 2;
+    matriz2.cols = 2;
+    matriz2.rows = 2;
+    double arreglo[4] = {5, 6, 7, 8};
+    matriz1.array = arreglo;
+    matriz2.array = arreglo;
+
+    if(print_matrix(outputFile, &matriz1) == ERROR) {
     	return ERROR;
-    }*/
+    }
 
     return SALIDA_EXITOSA;
 }
