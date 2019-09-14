@@ -93,7 +93,7 @@ int main(int argc, char *argv[]) {
                 printf("	cat in.txt | tp0 > out.txt \n");
                 return 0;
             default:
-                // asï¿½ estï¿½ en el manual de getopt
+                // así está en el manual de getopt
                 abort();
         }
     }
@@ -104,7 +104,12 @@ int main(int argc, char *argv[]) {
     matrix_t* matriz1;
     matrix_t* matriz2;
 
-    while ((fscanf(inputFile,"%d",&dimension)) != EOF) {
+    int k;
+    while ((k=fscanf(inputFile,"%d",&dimension)) != EOF) {
+		if (k==0){
+			fprintf(stderr, "Error fscanf: Dimension erronea en una matriz \n");
+			return ERROR;
+		}
 		matriz1 = create_matrix(dimension,dimension);
 		matriz2 = create_matrix(dimension,dimension);
 		float dato;
@@ -113,13 +118,21 @@ int main(int argc, char *argv[]) {
 		double* arreglo2 = (double*) malloc(dimension*dimension*sizeof(double));
 		
 		for(int i=0;i<(int)(dimension*dimension);i++){
-			fscanf(inputFile,"%g",&dato);
-			arreglo1[i] = dato;
+			if (fscanf(inputFile,"%g",&dato)==1)
+				arreglo1[i] = dato;
+			else{
+				fprintf(stderr, "Error fscanf: Valor erroneo en una matriz \n");
+            			return ERROR;
+			}
 		}
 
 		for(int j=0;j<(int)(dimension*dimension);j++){
-			fscanf(inputFile,"%g",&dato);
-			arreglo2[j] = dato;
+			if (fscanf(inputFile,"%g",&dato)==1)
+				arreglo2[j] = dato;
+			else{
+				fprintf(stderr, "Error fscanf: Valor erroneo en una matriz \n");
+            			return ERROR;
+			}
 		}
 		
 		matriz1->array = arreglo1;
@@ -137,9 +150,16 @@ int main(int argc, char *argv[]) {
     destroy_matrix(matriz1);
     destroy_matrix(matriz2);
     
+    //¿Es necesario ahora que ya no abro archivos ingresados por parametros? Quitar si no.
     if(fclose(inputFile)==EOF){
         fprintf(stderr, "Error fclose: %s\n", strerror( errno ));
         return ERROR;
+    }
+
+    if(fclose(outputFile)==EOF){
+        fprintf(stderr, "Error fclose: %s\n", strerror( errno ));
+        return ERROR;
+
     }
 
     return SALIDA_EXITOSA;
