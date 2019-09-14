@@ -42,7 +42,23 @@ int print_matrix(FILE* fp, matrix_t* m){
 }
 
 // Multiplica las matrices en m1 y m2
-//matrix_t* matrix_multiply(matrix_t* m1, matrix_t* m2);
+matrix_t* matrix_multiply(matrix_t* m1, matrix_t* m2){
+	matrix_t* resultado;
+	size_t dimension;
+	dimension = m2->cols;
+	double* array = (double*) malloc(dimension*dimension*sizeof(double));
+	resultado = create_matrix(dimension,dimension);
+	for (int i = 0; i < dimension; i++) {
+	        for (int j = 0; j < dimension; j++) {
+	            float sum = 0.0;
+	            for (int k = 0; k < dimension; k++)
+	                sum = sum + m1->array[i * dimension + k] * m2->array[k * dimension + j];
+	            array[i * dimension + j] = sum;
+	        }
+	}
+	resultado->array = array;
+	return resultado;
+}
 
 
 int main(int argc, char *argv[]) {
@@ -109,19 +125,17 @@ int main(int argc, char *argv[]) {
 		matriz1->array = arreglo1;
 		matriz2->array = arreglo2;
 		
-		//matrix_t* resultado;
-		//resultado = matrix_multiply(&matriz1, &matriz2);
+		matrix_t* resultado;
+		resultado = matrix_multiply(matriz1, matriz2);
 	
-		//Aca imprimo la primer matriz para probar, pero tiene que imprimir "resultado"
-		if(print_matrix(outputFile, matriz1) == ERROR) {
+		if(print_matrix(outputFile, resultado) == ERROR) {
 			return ERROR;
 		}
+		destroy_matrix(resultado);
     }
     
     destroy_matrix(matriz1);
     destroy_matrix(matriz2);
-    //free(matriz1);
-    //free(matriz2);
     
     if(fclose(inputFile)==EOF){
         fprintf(stderr, "Error fclose: %s\n", strerror( errno ));
@@ -130,9 +144,3 @@ int main(int argc, char *argv[]) {
 
     return SALIDA_EXITOSA;
 }
-
-/*matrix_t* create_matrix(size_t rows, size_t cols){
-	struct matrix matrix = {.rows = rows,.cols = cols };
-	printf("creo matriz de %c x %c \n", rows, cols);
-	
-}*/
