@@ -15,25 +15,24 @@ typedef struct matrix {
 } matrix_t;
 
 // Constructor de matrix_t
-matrix_t create_matrix(size_t rows, size_t cols){
-	double arreglo[rows*rows];
-	matrix_t matriz;
-	matriz.array = arreglo;
-	matriz.rows = rows;
-	matriz.cols = cols;
+matrix_t* create_matrix(size_t rows, size_t cols){
+	matrix_t* matriz = malloc(sizeof(matrix_t));
+	matriz->rows = rows;
+	matriz->cols = cols;
 	return matriz;
 }
 
 // Destructor de matrix_t
-//void destroy_matrix(matrix_t* m);
+void destroy_matrix(matrix_t* m){
+	free(m);
+}
 
 // Imprime matrix_t sobre el file pointer fp en el formato solicitado
 // por el enunciado
 int print_matrix(FILE* fp, matrix_t* m){
-
     fprintf(fp, "%d ", m->cols);
     int i = 0;
-    while (i < (int)(m->cols*m->cols)){
+    while (i < (int)(m->cols*m->rows)){
         fprintf(fp, "%g ", m->array[i]);
         i++;
     }
@@ -78,7 +77,7 @@ int main(int argc, char *argv[]) {
                 printf("	cat in.txt | tp0 > out.txt \n");
                 return 0;
             default:
-                // así está en el manual de getopt
+                // asï¿½ estï¿½ en el manual de getopt
                 abort();
         }
     }
@@ -86,40 +85,44 @@ int main(int argc, char *argv[]) {
     inputFile = stdin;
     outputFile = stdout;
 
-    matrix_t matriz1;
-    matrix_t matriz2;
+    matrix_t* matriz1;
+    matrix_t* matriz2;
 
     while ((fscanf(inputFile,"%d",&dimension)) != EOF) {
-	matriz1 = create_matrix(dimension,dimension);
-	matriz2 = create_matrix(dimension,dimension);
+		matriz1 = create_matrix(dimension,dimension);
+		matriz2 = create_matrix(dimension,dimension);
+		float dato;
 
+		double* arreglo1 = (double*) malloc(dimension*dimension*sizeof(double));
+		double* arreglo2 = (double*) malloc(dimension*dimension*sizeof(double));
+		
+		for(int i=0;i<(int)(dimension*dimension);i++){
+			fscanf(inputFile,"%g",&dato);
+			arreglo1[i] = dato;
+		}
 
-	float dato;
-	double arreglo1[(int)(dimension*dimension)];
-	double arreglo2[(int)(dimension*dimension)];
-
-	for(int i=0;i<(int)(dimension*dimension);i++){
-		fscanf(inputFile,"%g",&dato);
-		arreglo1[i] = dato;
-	}
-
-	for(int j=0;j<(int)(dimension*dimension);j++){
-		fscanf(inputFile,"%g",&dato);
-		arreglo2[j] = dato;
-	}
-
-	matriz1.array = arreglo1;
-	matriz2.array = arreglo2;
-
-	//matrix_t* resultado;
-	//resultado = matrix_multiply(&matriz1, &matriz2);
-
-	//Aca imprimo la primer matriz para probar, pero tiene que imprimir "resultado"
-	if(print_matrix(outputFile, &matriz1) == ERROR) {
-		return ERROR;
-	}
+		for(int j=0;j<(int)(dimension*dimension);j++){
+			fscanf(inputFile,"%g",&dato);
+			arreglo2[j] = dato;
+		}
+		
+		matriz1->array = arreglo1;
+		matriz2->array = arreglo2;
+		
+		//matrix_t* resultado;
+		//resultado = matrix_multiply(&matriz1, &matriz2);
+	
+		//Aca imprimo la primer matriz para probar, pero tiene que imprimir "resultado"
+		if(print_matrix(outputFile, matriz1) == ERROR) {
+			return ERROR;
+		}
     }
-
+    
+    destroy_matrix(matriz1);
+    destroy_matrix(matriz2);
+    //free(matriz1);
+    //free(matriz2);
+    
     if(fclose(inputFile)==EOF){
         fprintf(stderr, "Error fclose: %s\n", strerror( errno ));
         return ERROR;
