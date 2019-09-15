@@ -30,10 +30,10 @@ void destroy_matrix(matrix_t* m){
 // Imprime matrix_t sobre el file pointer fp en el formato solicitado
 // por el enunciado
 int print_matrix(FILE* fp, matrix_t* m){
-    fprintf(fp, "%d ", m->cols);
+    if (fprintf(fp, "%zd ", m->cols) < 0) return ERROR;
     int i = 0;
     while (i < (int)(m->cols*m->rows)){
-        fprintf(fp, "%g ", m->array[i]);
+        if (fprintf(fp, "%g ", m->array[i]) < 0) return ERROR;
         i++;
     }
     fprintf(fp, "\n");
@@ -105,7 +105,7 @@ int main(int argc, char *argv[]) {
     matrix_t* matriz2;
 
     int k;
-    while ((k=fscanf(inputFile,"%d",&dimension)) != EOF) {
+    while ((k=fscanf(inputFile,"%zd",&dimension)) != EOF) {
 		if (k==0){
 			fprintf(stderr, "Error fscanf: Dimension erronea en una matriz \n");
 			return ERROR;
@@ -142,6 +142,7 @@ int main(int argc, char *argv[]) {
 		resultado = matrix_multiply(matriz1, matriz2);
 	
 		if(print_matrix(outputFile, resultado) == ERROR) {
+			fprintf(stderr, "Error print_matrix: No se pudo escribir la matriz resultado \n");
 			return ERROR;
 		}
 		destroy_matrix(resultado);
