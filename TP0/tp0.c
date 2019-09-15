@@ -49,13 +49,16 @@ matrix_t* matrix_multiply(matrix_t* m1, matrix_t* m2){
 	dimension = m2->cols;
 	double* array = (double*) malloc(dimension*dimension*sizeof(double));
 	resultado = create_matrix(dimension,dimension);
-	for (int i = 0; i < dimension; i++) {
-	        for (int j = 0; j < dimension; j++) {
-	            float sum = 0.0;
-	            for (int k = 0; k < dimension; k++)
-	                sum = sum + m1->array[i * dimension + k] * m2->array[k * dimension + j];
-	            array[i * dimension + j] = sum;
-	        }
+    int i;
+	for (i = 0; i < dimension; i++) {
+        int j;
+        for (j = 0; j < dimension; j++) {
+            float sum = 0.0;
+            int k;
+            for (k = 0; k < dimension; k++)
+                sum = sum + m1->array[i * dimension + k] * m2->array[k * dimension + j];
+            array[i * dimension + j] = sum;
+        }
 	}
 	resultado->array = array;
 	return resultado;
@@ -118,7 +121,8 @@ int main(int argc, char *argv[]) {
 		double* arreglo1 = (double*) malloc(dimension*dimension*sizeof(double));
 		double* arreglo2 = (double*) malloc(dimension*dimension*sizeof(double));
 		
-		for(int i=0;i<(int)(dimension*dimension);i++){
+        int i;
+		for(i=0;i<(int)(dimension*dimension);i++){
 			if (fscanf(inputFile,"%g",&dato)==1)
 				arreglo1[i] = dato;
 			else{
@@ -127,7 +131,8 @@ int main(int argc, char *argv[]) {
 			}
 		}
 
-		for(int j=0;j<(int)(dimension*dimension);j++){
+        int j;
+		for(j=0;j<(int)(dimension*dimension);j++){
 			if (fscanf(inputFile,"%g",&dato)==1)
 				arreglo2[j] = dato;
 			else{
