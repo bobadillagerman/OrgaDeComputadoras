@@ -24,6 +24,7 @@ matrix_t* create_matrix(size_t rows, size_t cols){
 
 // Destructor de matrix_t
 void destroy_matrix(matrix_t* m){
+    free(m->array);
 	free(m);
 }
 
@@ -79,7 +80,7 @@ int main(int argc, char *argv[]) {
                 printf("TP #0 de la materia Organizacion de Computadoras \n");
                 printf("Alumnos: \n");
                 printf("	Bobadilla Catalan, German\n	Leloutre, Daniela \n	Soro, Lucas \n");
-                return 0;
+                return SALIDA_EXITOSA;
             case 'h':
                 printf("Usage: \n");
                 printf("	%s -h \n", argv[0]);
@@ -91,7 +92,7 @@ int main(int argc, char *argv[]) {
 		printf("Examples: \n");
 		printf("	tp0 < in.txt > out.txt \n");
                 printf("	cat in.txt | tp0 > out.txt \n");
-                return 0;
+                return SALIDA_EXITOSA;
             default:
                 // así está en el manual de getopt
                 abort();
@@ -146,10 +147,10 @@ int main(int argc, char *argv[]) {
 			return ERROR;
 		}
 		destroy_matrix(resultado);
-    }
     
-    destroy_matrix(matriz1);
-    destroy_matrix(matriz2);
+        destroy_matrix(matriz1);
+        destroy_matrix(matriz2);
+    }
     
     //¿Es necesario ahora que ya no abro archivos ingresados por parametros? Quitar si no.
     if(fclose(inputFile)==EOF){
