@@ -108,7 +108,7 @@ int main(int argc, char *argv[]) {
     matrix_t* matriz1;
     matrix_t* matriz2;
 
-    int k;
+    int k, caracter;
     while ((k=fscanf(inputFile,"%zd",&dimension)) != EOF) {
 		if (k==0){
 			fprintf(stderr, "Error fscanf: Dimension erronea en una matriz \n");
@@ -120,26 +120,42 @@ int main(int argc, char *argv[]) {
 
 		double* arreglo1 = (double*) malloc(dimension*dimension*sizeof(double));
 		double* arreglo2 = (double*) malloc(dimension*dimension*sizeof(double));
+
 		
-        int i;
-		for(i=0;i<(int)(dimension*dimension);i++){
-			if (fscanf(inputFile,"%g",&dato)==1)
-				arreglo1[i] = dato;
-			else{
-				fprintf(stderr, "Error fscanf: Valor erroneo en una matriz \n");
-            			return ERROR;
+		int cantidadDeElementosEnUnaLinea=0, i=0;
+		while (cantidadDeElementosEnUnaLinea<((dimension*dimension)*2)){
+			caracter = fgetc(inputFile);
+			while (caracter==' ')
+				caracter = fgetc(inputFile);
+			if (caracter=='\n'){
+				fprintf(stderr, "Error fgetc: Cantidad erronea de elementos en una linea \n");
+				return ERROR;
+			} else {
+				cantidadDeElementosEnUnaLinea++;
+				fseek(inputFile,-1,SEEK_CUR);
+				if (fscanf(inputFile,"%g",&dato)==1)
+					if (cantidadDeElementosEnUnaLinea<=(dimension*dimension))
+						arreglo1[i] = dato;
+					else
+						arreglo2[i] = dato;
+				else {
+					fprintf(stderr, "Error fscanf: Valor erroneo en una matriz \n");
+					return ERROR;
+				}
+				i++;
+				if (cantidadDeElementosEnUnaLinea==(dimension*dimension))
+					i = 0;
 			}
+		}
+		caracter = fgetc(inputFile);
+		while (caracter==' '){
+			caracter = fgetc(inputFile);
+		}
+		if (caracter != '\n'){
+			fprintf(stderr, "Error fgetc: Cantidad erronea de elementos en una linea \n");
+			return ERROR;
 		}
 
-        int j;
-		for(j=0;j<(int)(dimension*dimension);j++){
-			if (fscanf(inputFile,"%g",&dato)==1)
-				arreglo2[j] = dato;
-			else{
-				fprintf(stderr, "Error fscanf: Valor erroneo en una matriz \n");
-            			return ERROR;
-			}
-		}
 		
 		matriz1->array = arreglo1;
 		matriz2->array = arreglo2;
