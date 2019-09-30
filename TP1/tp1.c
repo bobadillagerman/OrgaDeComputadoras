@@ -42,6 +42,9 @@ int print_matrix(FILE* fp, matrix_t* m){
     return SALIDA_EXITOSA;
 }
 
+
+//********************************CODIGO EN ASSEMBLER***********************
+//esto en el .S
 // Multiplica las matrices en m1 y m2
 matrix_t* matrix_multiply(matrix_t* m1, matrix_t* m2){
 	matrix_t* resultado;
@@ -63,6 +66,7 @@ matrix_t* matrix_multiply(matrix_t* m1, matrix_t* m2){
 	resultado->array = array;
 	return resultado;
 }
+//**********************************FIN ASSEMBLER****************************
 
 
 int main(int argc, char *argv[]) {
