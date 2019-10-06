@@ -4,15 +4,10 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <errno.h>
+#include "multiply.h"
 
 #define ERROR -1
 #define SALIDA_EXITOSA 0
-
-typedef struct matrix {
-    size_t rows;
-    size_t cols;
-    double* array;
-} matrix_t;
 
 // Constructor de matrix_t
 matrix_t* create_matrix(size_t rows, size_t cols){
@@ -41,32 +36,6 @@ int print_matrix(FILE* fp, matrix_t* m){
 
     return SALIDA_EXITOSA;
 }
-
-
-//********************************CODIGO EN ASSEMBLER***********************
-//esto en el .S
-// Multiplica las matrices en m1 y m2
-matrix_t* matrix_multiply(matrix_t* m1, matrix_t* m2){
-	matrix_t* resultado;
-	size_t dimension;
-	dimension = m2->cols;
-	double* array = (double*) malloc(dimension*dimension*sizeof(double));
-	resultado = create_matrix(dimension,dimension);
-    int i;
-	for (i = 0; i < dimension; i++) {
-        int j;
-        for (j = 0; j < dimension; j++) {
-            float sum = 0.0;
-            int k;
-            for (k = 0; k < dimension; k++)
-                sum = sum + m1->array[i * dimension + k] * m2->array[k * dimension + j];
-            array[i * dimension + j] = sum;
-        }
-	}
-	resultado->array = array;
-	return resultado;
-}
-//**********************************FIN ASSEMBLER****************************
 
 
 int main(int argc, char *argv[]) {
@@ -101,7 +70,7 @@ int main(int argc, char *argv[]) {
                 printf("	cat in.txt | tp0 > out.txt \n");
                 return SALIDA_EXITOSA;
             default:
-                // asÌ est· en el manual de getopt
+                // as√≠ est√° en el manual de getopt
                 abort();
         }
     }
