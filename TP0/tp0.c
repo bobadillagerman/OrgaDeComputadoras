@@ -73,8 +73,9 @@ int main(int argc, char *argv[]) {
             {"help",    no_argument,       NULL, 'h'},
             {NULL, 0,                      NULL, 0}
     };
-    FILE *inputFile = NULL;
+    FILE *inputFileOriginal = NULL;
     FILE *outputFile = NULL;
+    FILE *inputFile = tmpfile();
     size_t dimension;
     
     while ((option = getopt_long(argc, argv, short_opt, long_opt, NULL)) != -1) {
@@ -102,8 +103,16 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    inputFile = stdin;
+    inputFileOriginal = stdin;
     outputFile = stdout;
+
+    //Corregido bug de entrada estandar por tuberia
+    int data;
+    while ((data=fgetc(inputFileOriginal)) != EOF ) {
+	fputc(data,inputFile );
+    }
+    rewind(inputFile);
+
 
     matrix_t* matriz1;
     matrix_t* matriz2;
