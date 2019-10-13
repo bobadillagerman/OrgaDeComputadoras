@@ -65,16 +65,16 @@ matrix_multiply:
 	li t0, 0 	#i = 0
 
 for1: 
-	blt t0, t5, end_for1	#condicion salida: i < dimension
+	bge t0, t5, end_for1	#condicion salida: i < dimension
 	li t1, 0  #j = 0
 
 for2:
-	blt t1, t5, end_for2	#condicion salida: j < dimension
+	bge t1, t5, end_for2	#condicion salida: j < dimension
 	li t2, 0	#k = 0
-	l.d $f0, 0 	#sum = 0.0
+	li.d $f0, 0 	#sum = 0.0
 
 for3:
-	blt t2, t5, end_for3	#condicion salida: k < dimension
+	bge t2, t5, end_for3	#condicion salida: k < dimension
 
 	mul t3, t0, t5 			#t3 = i*dimension
 	addu t3, t3, t2 		#t3 = (i*dimension) + k
@@ -82,15 +82,15 @@ for3:
 	mul t4, t2, t5			#t4 = k*dimension
 	addu t4, t4, t1			#t4 = (k*dimension) + j
 
+	sll t3, t3, 3
 	lw t6, 8(a0)	#t6 = m1->array
 
-	mul t6, t6, 8	#dir de array[pos] = 8xpos
 	add t6, t6, t3	#t6 = &m1->array[(i*dimension) + k]
 	l.d $f2, 0(t6)	#f2 = m1->array[(i*dimension) + k]
 
+	sll t4, t4, 3
 	lw t7, 8(a1)	#t7 = m2->array
 
-	mul t7, t7, 8	#repito para m2
 	add t7, t7, t4	#t7 = m2->array[(k*dimension) + j]
 	l.d $f4, 0(t7)	
 
@@ -102,12 +102,12 @@ for3:
 	j for3 			
 
 end_for3:
-	mul t4, t0, t1 	#i*dimension
-	addu t4, t4, t2 #i*dimension + j
+	mul t4, t0, t5 	#i*dimension
+	addu t4, t4, t1 #i*dimension + j
 		
 	lw t6, 8(v0)	#t6 = m3->array
 		
-	mul t4, t4, 8
+	sll t4, t4, 3  
 	add t6, t6, t4  #m3->array[i*dim+j]
 	s.d $f0, 0(t6)	#m3->array[i*dim+j] = sum
 

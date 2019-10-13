@@ -14,6 +14,7 @@ matrix_t* create_matrix(size_t rows, size_t cols){
 	matrix_t* matriz = malloc(sizeof(matrix_t));
 	matriz->rows = rows;
 	matriz->cols = cols;
+	matriz->array = (double*) malloc(rows*cols*sizeof(double));
 	return matriz;
 }
 
