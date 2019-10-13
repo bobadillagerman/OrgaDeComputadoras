@@ -7,7 +7,7 @@ typedef struct matrix {
     double* array;
 } matrix_t;
 
-matrix_t* matrix_multiply(matrix_t* m1, matrix_t* m2);
+extern matrix_t* matrix_multiply(matrix_t* m1, matrix_t* m2);
 
 #endif
 

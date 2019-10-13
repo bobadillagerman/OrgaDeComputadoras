@@ -46,8 +46,9 @@ int main(int argc, char *argv[]) {
             {"help",    no_argument,       NULL, 'h'},
             {NULL, 0,                      NULL, 0}
     };
-    FILE *inputFile = NULL;
+    FILE *inputFileOriginal = NULL;
     FILE *outputFile = NULL;
+    FILE *inputFile = tmpfile();
     size_t dimension;
     
     while ((option = getopt_long(argc, argv, short_opt, long_opt, NULL)) != -1) {
@@ -70,24 +71,33 @@ int main(int argc, char *argv[]) {
                 printf("	cat in.txt | tp0 > out.txt \n");
                 return SALIDA_EXITOSA;
             default:
-                // así está en el manual de getopt
                 abort();
         }
     }
 
-    inputFile = stdin;
+    inputFileOriginal = stdin;
     outputFile = stdout;
+
+    //Corregido bug de entrada estandar por tuberia
+    int data;
+    while ((data=fgetc(inputFileOriginal)) != EOF ) {
+	fputc(data,inputFile );
+    }
+    rewind(inputFile);
+
 
     matrix_t* matriz1;
     matrix_t* matriz2;
 
     //En cada ciclo leo una linea
     int k, caracter;
+
     while ((k=fscanf(inputFile,"%zd",&dimension)) != EOF) {
 		if (k==0){
 			fprintf(stderr, "Error fscanf: Dimension erronea en una matriz \n");
 			return ERROR;
 		}
+
 		matriz1 = create_matrix(dimension,dimension);
 		matriz2 = create_matrix(dimension,dimension);
 		float dato;
@@ -139,6 +149,7 @@ int main(int argc, char *argv[]) {
 		
 		matrix_t* resultado;
 		resultado = matrix_multiply(matriz1, matriz2);
+
 	
 		if(print_matrix(outputFile, resultado) == ERROR) {
 			fprintf(stderr, "Error print_matrix: No se pudo escribir la matriz resultado \n");
