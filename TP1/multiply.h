@@ -9,6 +9,8 @@ typedef struct matrix {
 
 extern matrix_t* matrix_multiply(matrix_t* m1, matrix_t* m2);
 
+matrix_t* create_matrix(size_t rows, size_t cols);
+
 #endif
 
 

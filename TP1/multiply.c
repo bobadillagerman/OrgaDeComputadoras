@@ -5,7 +5,6 @@ matrix_t* matrix_multiply(matrix_t* m1, matrix_t* m2){
 	matrix_t* resultado;
 	size_t dimension;
 	dimension = m2->cols;
-	double* array = (double*) malloc(dimension*dimension*sizeof(double));
 	resultado = create_matrix(dimension,dimension);
     int i;
 	for (i = 0; i < dimension; i++) {
@@ -15,10 +14,9 @@ matrix_t* matrix_multiply(matrix_t* m1, matrix_t* m2){
             int k;
             for (k = 0; k < dimension; k++)
                 sum = sum + m1->array[i * dimension + k] * m2->array[k * dimension + j];
-            array[i * dimension + j] = sum;
+            resultado->array[i * dimension + j] = sum;
         }
 	}
-	resultado->array = array;
 	return resultado;
 }
 

@@ -27,10 +27,16 @@ void destroy_matrix(matrix_t* m){
 // Imprime matrix_t sobre el file pointer fp en el formato solicitado
 // por el enunciado
 int print_matrix(FILE* fp, matrix_t* m){
-    if (fprintf(fp, "%zd ", m->cols) < 0) return ERROR;
+    if (fprintf(fp, "%zd ", m->cols) < 0) {
+        fprintf(stderr, "Error print_matrix: Valor erroneo en una columna \n");
+        return ERROR;
+    }
     int i = 0;
     while (i < (int)(m->cols*m->rows)){
-        if (fprintf(fp, "%g ", m->array[i]) < 0) return ERROR;
+        if (fprintf(fp, "%g ", m->array[i]) < 0) {
+            fprintf(stderr, "Error print_matrix: Valor erroneo en una fila \n");
+        return ERROR;
+        }
         i++;
     }
     fprintf(fp, "\n");
@@ -72,8 +78,14 @@ int main(int argc, char *argv[]) {
                 printf("	cat in.txt | tp0 > out.txt \n");
                 return SALIDA_EXITOSA;
             default:
+		fprintf(stderr, "Error: Argumento invalido \n");
                 abort();
         }
+    }
+
+    if (argc == 2) {
+    	fprintf(stderr, "Error: Argumento invalido \n");
+        return ERROR;
     }
 
     inputFileOriginal = stdin;
