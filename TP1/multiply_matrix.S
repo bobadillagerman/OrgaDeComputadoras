@@ -21,8 +21,8 @@ matrix_multiply:
     subu    sp, sp, 32    # 4 (SRA) + 4 (ABA)
 
     # directiva para codigo PIC
-    .cprestore 16       # inserta aqui "sw gp, 24(sp)",
-                	# mas "lw gp, 24(sp)" luego de #cada jal
+    .cprestore 16       # inserta aqui "sw gp, 16(sp)",
+                	    # mas "lw gp, 16(sp)" luego de #cada jal
 
     # salvado de callee-saved regs en SRA    
     sw    $fp, 20(sp)
@@ -131,3 +131,63 @@ end_for1:
 
   .end    matrix_multiply
   .size   matrix_multiply,.-matrix_multiply
+
+    .globl  create_matrix
+    .ent    create_matrix
+
+create_matrix:
+    #debugging info: descripcion del stack frame
+    .frame    $fp, 32, ra    
+
+    # bloque para codigo PIC
+    .set    noreorder    
+    .cpload t9            
+    .set    reorder        
+
+    # creo stack frame
+    subu    sp, sp, 32    # 4 (SRA) + 4 (ABA)
+
+    # directiva para codigo PIC
+    .cprestore 16       # inserta aqui "sw gp, 16(sp)",
+                	    # mas "lw gp, 16(sp)" luego de #cada jal
+
+    # salvado de callee-saved regs en SRA    
+    sw    $fp, 20(sp)
+    sw    ra, 24(sp)
+
+    # de aqui al fin de la funcion uso $fp en lugar de sp.
+    move    $fp, sp
+    
+    # salvo argumentos
+    sw  a0, 32($fp)      # rows
+    sw  a1, 36($fp) 	# cols
+
+    # reservo 12 bytes de memoria (Lo que ocupa el matrix_t)
+    li a0, 12
+    la t9, mymalloc
+    jal ra, t9
+    sw v0, 28($fp)      # Salvo puntero a matrix_t
+
+    sw a0, 0(v0)        # matriz->rows = rows
+    sw a1, 4(v0)        # matriz->cols = rows
+
+    mul t0, a0, a1      # t0 = rows * cols
+    sll t0, t0, 3       # t0 = t0 * 8, 8 es sizeof(double)
+    move a0, t0
+    la t9, mymalloc
+    jal ra, t9          # v0 = malloc(t0), puntero a array
+    
+    move t0, v0         # t0 = puntero a array
+    lw v0, 28($fp)      # v0 = puntero a matriz
+    sw t0, 8(v0)        # matriz->array t0;
+
+    # restauro callee-saved regs
+    lw    gp, 16(sp)
+    lw    $fp, 20(sp)
+    lw    ra, 24(sp)
+    # destruyo stack frame
+    addu    sp, sp, 32
+    # vuelvo a funcion llamante
+    jr    ra
+
+  .end    create_matrix
