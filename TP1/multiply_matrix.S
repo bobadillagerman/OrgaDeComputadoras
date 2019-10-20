@@ -168,6 +168,9 @@ create_matrix:
     jal ra, t9
     sw v0, 28($fp)      # Salvo puntero a matrix_t
 
+    lw a0, 32($fp) 
+    lw a1, 36($fp)
+
     sw a0, 0(v0)        # matriz->rows = rows
     sw a1, 4(v0)        # matriz->cols = rows
 
