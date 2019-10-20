@@ -1,5 +1,15 @@
 #include <stdlib.h>
 #include "multiply.h"
+#include "mymalloc.h"
+
+// Constructor de matrix_t
+matrix_t* create_matrix(size_t rows, size_t cols){
+	matrix_t* matriz = mymalloc(sizeof(matrix_t));
+	matriz->rows = rows;
+	matriz->cols = cols;
+	matriz->array = (double*) mymalloc(rows*cols*sizeof(double));
+	return matriz;
+}
 
 matrix_t* matrix_multiply(matrix_t* m1, matrix_t* m2){
 	matrix_t* resultado;

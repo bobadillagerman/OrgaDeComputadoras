@@ -5,23 +5,16 @@
 #include <unistd.h>
 #include <errno.h>
 #include "multiply.h"
+#include "mymalloc.h"
 
 #define ERROR -1
 #define SALIDA_EXITOSA 0
 
-// Constructor de matrix_t
-matrix_t* create_matrix(size_t rows, size_t cols){
-	matrix_t* matriz = malloc(sizeof(matrix_t));
-	matriz->rows = rows;
-	matriz->cols = cols;
-	matriz->array = (double*) malloc(rows*cols*sizeof(double));
-	return matriz;
-}
 
 // Destructor de matrix_t
 void destroy_matrix(matrix_t* m){
-    free(m->array);
-	free(m);
+    myfree(m->array);
+	myfree(m);
 }
 
 // Imprime matrix_t sobre el file pointer fp en el formato solicitado
@@ -115,8 +108,8 @@ int main(int argc, char *argv[]) {
 		matriz2 = create_matrix(dimension,dimension);
 		float dato;
 
-		double* arreglo1 = (double*) malloc(dimension*dimension*sizeof(double));
-		double* arreglo2 = (double*) malloc(dimension*dimension*sizeof(double));
+		double* arreglo1 = (double*) mymalloc(dimension*dimension*sizeof(double));
+		double* arreglo2 = (double*) mymalloc(dimension*dimension*sizeof(double));
 
 		
 		//En cada ciclo leo un numero (y espacios en blanco que voy a ignorar)
