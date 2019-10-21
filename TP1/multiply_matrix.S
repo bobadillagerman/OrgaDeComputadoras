@@ -172,7 +172,7 @@ create_matrix:
     lw a1, 36($fp)
 
     sw a0, 0(v0)        # matriz->rows = rows
-    sw a1, 4(v0)        # matriz->cols = rows
+    sw a1, 4(v0)        # matriz->cols = cols
 
     mul t0, a0, a1      # t0 = rows * cols
     sll t0, t0, 3       # t0 = t0 * 8, 8 es sizeof(double)
